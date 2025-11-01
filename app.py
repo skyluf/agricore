@@ -12,6 +12,8 @@ INDEX_HTML = open("template/index.html").read()
 LOGIN_HTML = open("template/login.html").read()
 REGISTER_HTML = open("template/register.html").read()
 STYLE_CSS = open("static/style.css").read()
+DASHBOARD_HTML=open("template/dashboard.html")
+DASHBOARDSTYLE_CSS=open("static/dashboardStyle.css")
 
 # Helper: Inject message into HTML
 def render_page(base_html, message="", msg_type=""):
@@ -32,7 +34,7 @@ def login():
         user = users.get(username)
 
         if user and check_password_hash(user['password'], password):
-            return render_page(INDEX_HTML, f"Welcome back, {username}!", "success")
+            return render_page(DASHBOARD_HTML, f"Welcome back, {username}!", "success")
         else:
             return render_page(LOGIN_HTML, "Invalid username or password.", "error")
     return render_page(LOGIN_HTML)
