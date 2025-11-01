@@ -1,0 +1,56 @@
+/* static/dashboard.css */
+
+body {
+  background-color: #f9f9f9;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.dashboard-title {
+  font-size: 32px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.features {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.feature-card {
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 12px;
+  width: 320px;
+  padding: 25px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: scale(1.05);
+  background-color: #f0f0f0;
+}
+
+.feature-card h3 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  font-size: 15px;
+  color: #444;
+}
+
+.feature-card a {
+  text-decoration: none;
+  color: black;
+}
+

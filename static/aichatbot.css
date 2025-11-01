@@ -1,0 +1,75 @@
+/* static/aichatbot.css */
+
+body {
+  background-color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 20px;
+}
+
+.chat-container {
+  max-width: 800px;
+  margin: auto;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 20px;
+  background: white;
+}
+
+.chat-title {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.chat-box {
+  border: 1px solid #ddd;
+  height: 400px;
+  overflow-y: auto;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+}
+
+.message {
+  margin: 10px 0;
+}
+
+.user {
+  text-align: right;
+  color: black;
+  font-weight: bold;
+}
+
+.bot {
+  text-align: left;
+  color: #333;
+}
+
+.input-area {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.input-area button {
+  padding: 10px 20px;
+  background: transparent;
+  border: 2px solid black;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.input-area button:hover {
+  background-color: black;
+  color: white;
+}
+
