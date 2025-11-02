@@ -1,10 +1,27 @@
-from flask import Flask, request, make_response, redirect
+from flask import Flask, request, make_response, redirect, jsonify  # Added jsonify
 import sqlite3
 import os
 import hashlib
+from flask_cors import CORS
+from google import genai
+from google.genai import types
+from dotenv import load_dotenv
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)  # ← ADD THIS LINE
+
+# Load environment variables
+load_dotenv()  # ← ADD THIS LINE
+
+# --- GEMINI API CONFIGURATION ---
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if GEMINI_API_KEY:
+    client = genai.Client(api_key=GEMINI_API_KEY)
+else:
+    print("Warning: GEMINI_API_KEY not found in environment variables")
+    client = None
+
 
 # --- PATH CONFIG ---
 TEMPLATE_DIR = os.path.join(os.getcwd(), "template")
@@ -148,6 +165,74 @@ def static_files(filename):
             response.headers['Content-Type'] = 'text/css'
         return response
     return "File not found", 404
+    
+# --- AI CHATBOT ENDPOINT ---
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """
+    AI-powered farming chatbot endpoint using Gemini 2.5 Flash
+    Accepts user messages and returns AI-generated farming advice
+    """
+    try:
+        # Check if Gemini client is initialized
+        if not client:
+            return jsonify({
+                'error': 'Gemini API not configured',
+                'response': 'Sorry, the AI service is not available. Please configure GEMINI_API_KEY.',
+                'status': 'error'
+            }), 500
+
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        
+        if not user_message:
+            return jsonify({'error': 'Message is required'}), 400
+        
+        # System prompt for farming expertise
+        system_instruction = """You are AgriBot, an expert agricultural assistant with deep knowledge of farming practices, crop management, soil health, pest control, irrigation, and sustainable agriculture. 
+
+Your role is to provide:
+- Practical farming tips and advice
+- Crop-specific guidance (planting, harvesting, care)
+- Soil management and fertilization recommendations
+- Pest and disease identification and control methods
+- Weather-based farming decisions
+- Organic and sustainable farming practices
+- Market trends and crop selection advice
+- Water management and irrigation techniques
+- Season-specific farming recommendations for India
+
+Always provide clear, actionable advice tailored for farmers. Keep responses concise (2-4 sentences) but informative. Use simple language that farmers can easily understand. Focus on practical, implementable solutions."""
+
+        # Generate response using Gemini 2.5 Flash
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=user_message,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                temperature=0.7,
+                max_output_tokens=300,
+                top_p=0.95,
+                top_k=40
+            )
+        )
+        
+        # Extract the response text
+        bot_response = response.text.strip()
+
+        return jsonify({
+            'response': bot_response,
+            'status': 'success'
+        })
+    
+    except Exception as e:
+        print(f"Error in chat endpoint: {str(e)}")
+        return jsonify({
+            'error': str(e),
+            'response': 'Sorry, I encountered an error. Please try again.',
+            'status': 'error'
+        }), 500
+
 
 # --- RUN APP ---
 if __name__ == '__main__':
